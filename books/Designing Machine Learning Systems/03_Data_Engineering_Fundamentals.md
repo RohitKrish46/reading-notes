@@ -263,7 +263,9 @@ Production ML systems require data passage between multiple processes that don't
 
 ### Stream Processing: Real-Time Data Analysis
 **Data Source**: Real-time streaming data from transports like Kafka and Kinesis
+
 **Execution Pattern**: Continuous processing or short intervals (minutes)
+
 **Latency Advantage**: Process data immediately upon generation without database storage delays
 
 **Feature Generation**: Produces streaming/dynamic features for rapidly changing data
