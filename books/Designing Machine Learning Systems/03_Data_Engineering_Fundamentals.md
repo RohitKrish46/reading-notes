@@ -5,7 +5,7 @@
 Machine learning systems work with data from multiple sources, each with distinct characteristics requiring different processing approaches. Understanding these sources helps optimize data usage and system efficiency.
 
 ### User Input Data
-User input data represents information explicitly provided by users, including text, images, videos, and uploaded files. The fundamental challenge with user input is its unreliability—if users can input incorrect data, they will. This reality makes user input data particularly prone to malformatting issues.
+User input data represents information explicitly provided by users, including text, images, videos, and uploaded files. The fundamental challenge with user input is its unreliability; if users can input incorrect data, they will. This reality makes user input data particularly prone to malformatting issues.
 
 **Key Challenges:**
 - Text may be too long, too short, or contain unexpected characters
