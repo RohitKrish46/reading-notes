@@ -113,7 +113,7 @@ The relational model remains one of computer science's most enduring concepts, o
 - **Query Language**: SQL provides declarative query capabilities
 
 **SQL's Declarative Power:**
-Unlike imperative languages (Python), SQL is declarative—you specify desired outputs rather than execution steps. The database engine determines optimal query execution paths, including join strategies, sorting methods, and operation sequencing. SQL approaches Turing-completeness, theoretically capable of solving any computation problem.
+Unlike imperative languages (Python), SQL is declarative; you specify desired outputs rather than execution steps. The database engine determines optimal query execution paths, including join strategies, sorting methods, and operation sequencing. SQL approaches Turing-completeness, theoretically capable of solving any computation problem.
 
 **Normalization Trade-off:**
 While normalization reduces data redundancy and ensures consistency, it spreads data across multiple relations. Rejoining data requires expensive operations, particularly for large tables.
@@ -121,7 +121,7 @@ While normalization reduces data redundancy and ensures consistency, it spreads 
 ### NoSQL Models: Beyond Relational Constraints
 
 #### Document Model Architecture
-Built around the document concept—typically single continuous strings encoded in JSON, XML, or binary formats like BSON.
+Built around the document concept; typically single continuous strings encoded in JSON, XML, or binary formats like BSON.
 
 **Advantages:**
 - **Schema Flexibility**: No enforced structure requirements (often called "schemaless")
@@ -165,7 +165,7 @@ Storage engines implement the actual mechanisms for data storage and retrieval, 
 Handles real-time business transactions requiring immediate processing with strict performance requirements.
 
 - **Latency Requirement**: Low latency for user-facing operations
-- **Availability Requirement**: High availability—system downtime prevents transactions
+- **Availability Requirement**: High availability; system downtime prevents transactions
 - **Data Format**: Row-major for individual record processing
 - **ACID Compliance**: Some systems use BASE (Basically Available, Soft state, Eventual consistency) for less restrictive requirements
 - **Use Cases**: E-commerce purchases, ride bookings, social media posts
