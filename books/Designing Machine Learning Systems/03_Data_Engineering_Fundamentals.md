@@ -252,7 +252,9 @@ Production ML systems require data passage between multiple processes that don't
 
 ### Batch Processing: Historical Data Analysis
 **Data Source**: Historical data stored in databases, data lakes, or warehouses
+
 **Execution Pattern**: Periodic jobs (daily, weekly, monthly schedules)
+
 **Technology**: Distributed systems like MapReduce and Spark for efficient large-scale processing
 
 **Feature Generation**: Produces batch/static features for slowly changing data
