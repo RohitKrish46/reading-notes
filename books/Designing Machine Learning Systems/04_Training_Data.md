@@ -1,132 +1,168 @@
-# ML Training Data - Key Points
+Here's the transformed content in the requested style:
 
-## Core Principles
+# ML System Design - Data & Processing Notes
 
-- **Data > Models**: Training data is more critical than model architecture; poor data will sink ML operations regardless of model sophistication
-- **Production Reality**: Data in production is neither finite nor stationary - it continuously evolves
-- **Iterative Process**: Training data creation is iterative and evolves with the model lifecycle
-- **Bias Awareness**: Data contains biases from collection, sampling, and labeling processes that ML models will perpetuate
+## Data Challenges in ML Development
 
-## Sampling Methods
+Despite data's critical role in ML model development, most curricula disproportionately focus on modeling—the "fun" part perceived by practitioners. While building cutting-edge models is engaging, data wrangling with malformatted, memory-exceeding datasets remains a frustrating reality.
 
-### Nonprobability Sampling
-- **Convenience**: Select based on availability (easy but biased)
-- **Snowball**: Future samples based on existing ones (e.g., Twitter account scraping)
-- **Judgment**: Expert-driven selection
-- **Quota**: Fixed quotas per category without randomization
-- **Risk**: Creates selection biases; common in language modeling (Wikipedia, Reddit data)
+### Core Data Characteristics
 
-### Probability-Based Sampling
-- **Simple Random**: Equal probability for all samples (risk: rare categories may not appear)
-- **Stratified**: Sample from predefined groups separately (ensures rare class representation)
-- **Weighted**: Assign probabilities based on domain expertise (prioritize valuable subpopulations)
-- **Reservoir**: For streaming data - maintains equal probability selection without knowing total stream size
-- **Importance**: Sample from one distribution when only having access to another (used in reinforcement learning)
+- **Inherent Complexity**: Data is messy, unpredictable, and potentially treacherous—improper handling can sink entire ML operations
+- **Dynamic Nature**: Production data is neither finite nor stationary
+- **Iterative Evolution**: Training data evolves alongside models throughout project lifecycles
+- **Bias Risks**: Data contains multiple bias types from collection, sampling, labeling, and historical human biases that models may perpetuate
+
+## Sampling Methodologies
+
+Sampling is fundamental across ML workflows, occurring at multiple stages:
+- Creating training sets from real-world data
+- Generating train/validation/test splits
+- Monitoring system event sampling
+
+**Strategic Importance**:
+- Prevents sampling biases
+- Optimizes sampling efficiency
+
+### Nonprobability Sampling Techniques
+
+| Method | Description | Use Case Example | Limitations |
+|--------|-------------|------------------|-------------|
+| **Convenience Sampling** | Selection based on availability | Common default approach | High selection bias |
+| **Snowball Sampling** | Chain-based selection from existing samples | Scraping social networks without API access | Amplifies existing biases |
+| **Judgment Sampling** | Expert-curated sample selection | Domain-specific data collection | Subjectivity risks |
+| **Quota Sampling** | Fixed-quota selection without randomization | Demographic-balanced surveys | Non-representative distributions |
+
+**Industry Reality**: Despite bias risks, convenience sampling dominates many applications (e.g., language models trained on easily available Wikipedia/Reddit data)
+
+### Probability-Based Sampling Methods
+
+**Simple Random Sampling**
+- **Mechanism**: Equal selection probability for all population members
+- **Advantage**: Implementation simplicity
+- **Drawback**: Rare category underrepresentation
+
+**Stratified Sampling**
+- **Mechanism**: Population division into strata with separate sampling
+- **Advantage**: Guarantees minority class representation
+- **Limitation**: Impractical for overlapping/multilabel cases
+
+**Weighted Sampling**
+- **Mechanism**: Sample selection probability weighted by domain importance
+- **Use Case**: Prioritizing recent data for time-sensitive models
+
+**Reservoir Sampling Algorithm** (for streaming data)
+1. Initialize reservoir with first k elements
+2. For nth element:
+   - Generate random i (1 ≤ i ≤ n)
+   - If i ≤ k: replace ith reservoir element
+3. **Mathematical Guarantee**: All elements have equal k/n selection probability
+
+**Importance Sampling**
+- **Core Concept**: Sample from accessible distribution Q to estimate target distribution P
+- **ML Application**: Policy-based reinforcement learning updates
 
 ## Labeling Strategies
 
-### Hand Labels
-- **Challenges**: Expensive, privacy concerns, slow iteration, requires expertise
-- **Label Multiplicity**: Multiple annotators create conflicting labels; need clear problem definitions
-- **Data Lineage**: Track origin and quality of labels for debugging and bias detection
+Most production ML systems rely on supervised learning, making label quality and quantity critical performance factors.
 
-### Natural Labels
-- **Definition**: Labels inferred from system feedback (clicks, purchases, user behavior)
-- **Examples**: Recommender systems (clicks = positive), fraud detection, newsfeed ranking
-- **Feedback Loop Length**: Time from prediction to feedback affects model iteration speed
-- **Implicit vs Explicit**: Inferred from lack of action vs direct user feedback
+### Hand Labeling Challenges
 
-### Handling Label Scarcity
+- **Privacy Risks**: Requires human data exposure
+- **Time Cost**: Creates model iteration bottlenecks
+- **Label Multiplicity**: Common annotator disagreements require:
+  - Clear problem definitions
+  - Data lineage tracking for bias detection
 
-#### Weak Supervision
-- **Concept**: Use heuristics encoded as Labeling Functions (LFs) instead of hand labels
-- **LF Types**: Keywords, regex, database lookups, other model outputs
-- **Benefits**: Cost-effective, privacy-preserving, fast scaling, adaptive to changes
-- **Process**: Create LFs on small data subset, apply programmatically to larger dataset
+### Natural Label Utilization
 
-#### Semi-Supervision
-- **Self-Training**: Use model predictions with high confidence as new labels
-- **Similarity-Based**: Samples with similar characteristics share labels
-- **Perturbation-Based**: Small changes shouldn't alter labels (add noise/perturbations)
-- **Strategy**: Balance between evaluation set size and training set augmentation
+**Behavioral Label Types**:
+- **Explicit**: Direct user feedback (ratings, downvotes)
+- **Implicit**: Inferred from lack of response (unclicked recommendations)
 
-#### Transfer Learning
-- **Process**: Pretrain on abundant data task, fine-tune for target task
-- **Base Tasks**: Language modeling (no labels needed), ImageNet for vision
-- **Applications**: Zero-shot learning, few-shot scenarios
-- **Trend**: Larger pretrained models generally perform better on downstream tasks
+**Feedback Loop Characteristics**:
+| Metric | Short Loop | Long Loop |
+|--------|------------|-----------|
+| **Speed** | Minutes/hours | Weeks/months |
+| **Signal Strength** | Weaker (clicks) | Stronger (purchases) |
+| **Use Case** | Real-time monitoring | Quarterly reporting |
 
-#### Active Learning
-- **Concept**: Model queries which samples to label next for maximum learning benefit
-- **Uncertainty Sampling**: Label examples model is least confident about
-- **Query-by-Committee**: Multiple models vote on most valuable samples to label
-- **Other Heuristics**: Highest gradient updates, maximum loss reduction
+### Label Acquisition Techniques
 
-## Class Imbalance
+**Weak Supervision**
+- **Mechanism**: Heuristic-based labeling functions (LFs)
+- **LF Types**: Keywords, regex patterns, database lookups, model outputs
+- **Advantages**:
+  - Cost-effective expertise reuse
+  - Privacy preservation
+  - Rapid scaling (1K → 1M samples)
 
-### Problem Characteristics
-- **Definition**: Substantial difference in sample numbers across classes
-- **Examples**: Fraud detection (6.8¢/$100), medical diagnosis, resume screening
-- **Causes**: Inherent to problem, sampling bias, or labeling errors
+**Semi-Supervision**
+- **Self-Training**: Model-generated high-confidence labels expand training set
+- **Similarity-Based**: Shared-label assumption for clustered data
+- **Perturbation**: Label-preserving data modifications
 
-### Challenges
-- **Insufficient Signal**: Few examples of minority class (few-shot learning)
-- **Trivial Solutions**: Model exploits majority class heuristic (99% accuracy predicting "no cancer")
-- **Asymmetric Costs**: Minority class errors often more expensive than majority class errors
+**Transfer Learning**
+- **Workflow**: Base model pre-training → downstream task adaptation
+- **Efficiency**: Reduces labeling requirements
+- **Trend**: Larger base models generally yield better downstream performance
 
-### Solutions
+**Active Learning**
+- **Selection Criteria**:
+  - Prediction uncertainty
+  - Model committee disagreement
+  - Potential loss reduction
+- **Data Regimes**: Synthetic, stationary pool, or real-time streams
 
-#### Evaluation Metrics
-- **Avoid**: Overall accuracy (dominated by majority class)
-- **Use**: Precision, Recall, F1 for positive class focus
-- **ROC Curves**: True positive rate vs false positive rate across thresholds
-- **Precision-Recall Curves**: Better for heavy imbalance than ROC
+## Class Imbalance Solutions
 
-#### Data-Level Methods (Resampling)
-- **Undersampling**: Remove majority class instances (Tomek links for low-dim data)
-- **Oversampling**: Add minority class instances (SMOTE for synthetic samples)
-- **Advanced**: Two-phase learning, dynamic sampling during training
-- **Warning**: Never evaluate on resampled data (causes overfitting to resampled distribution)
+Class imbalance—substantial inter-class sample count differences—affects both classification and regression tasks.
 
-#### Algorithm-Level Methods
-- **Cost-Sensitive Learning**: Manually define different misclassification costs
-- **Class-Balanced Loss**: Weight classes inversely proportional to sample count
-- **Focal Loss**: Higher weight for samples with lower prediction confidence
-- **Ensembles**: Multiple models help with imbalance problems
+### Imbalance Challenges
 
-## Data Augmentation
+1. **Signal Scarcity**: Insufficient minority class examples
+2. **Heuristic Traps**: Models exploit simple majority-class rules
+3. **Asymmetric Costs**: Minority class errors often more critical
 
-### Purpose
-- **Traditional**: Increase training data for limited datasets
-- **Modern**: Improve robustness even with abundant data, defend against adversarial attacks
+### Mitigation Approaches
 
-### Techniques by Domain
+**Evaluation Metrics**
+- **Avoid**: Accuracy (misleading with imbalance)
+- **Prefer**: F1, Precision-Recall curves, AUC-ROC
 
-#### Computer Vision
-- **Label-Preserving**: Crop, flip, rotate, invert, erase (rotated dog still a dog)
-- **Computational**: Generated on CPU while GPU trains (effectively free)
+**Data-Level Methods**
+| Technique | Process | Advantage | Limitation |
+|-----------|---------|-----------|------------|
+| **Random Oversampling** | Minority class duplication | Simple implementation | Overfitting risk |
+| **SMOTE** | Synthetic minority sample generation | Improved decision boundaries | High-dimension ineffectiveness |
+| **Random Undersampling** | Majority class reduction | Computational efficiency | Information loss |
+| **Tomek Links** | Borderline majority sample removal | Cleaner decision boundaries | Low-dimension only |
 
-#### Natural Language Processing
-- **Synonym Replacement**: Replace words with similar meaning (dictionary or embeddings)
-- **Constraint**: Must preserve sentence meaning and sentiment
+**Algorithm-Level Methods**
+- **Cost-Sensitive Learning**: Loss function incorporates misclassification costs
+- **Class-Balanced Loss**: Inverse class frequency weighting
+- **Focal Loss**: Emphasis on hard-to-classify examples
 
-### Advanced Methods
+## Data Augmentation Techniques
 
-#### Perturbation
-- **Adversarial Augmentation**: Add noise to find model weak spots
-- **DeepFool**: Minimum noise needed for misclassification
-- **Goal**: Improve decision boundary robustness
+Augmentation increases effective training data volume and improves model robustness.
 
-#### Data Synthesis
-- **NLP Templates**: Bootstrap conversational AI with structured patterns
-- **Mixup**: Combine examples with interpolated labels (continuous between classes)
-- **Benefits**: Improved generalization, reduced memorization, adversarial robustness
+### Computer Vision Approaches
 
-## Best Practices
+| Type | Methods | Characteristics |
+|------|---------|-----------------|
+| **Label-Preserving** | Rotation, flipping, cropping | Computationally inexpensive |
+| **Adversarial** | Noise injection, DeepFool attacks | Improves noise resistance |
+| **Synthetic** | Mixup interpolation | Enhances generalization |
 
-1. **Start Simple**: Use convenience sampling for initial exploration, upgrade to probability-based for production
-2. **Embrace Natural Labels**: Design systems to capture user feedback when possible
-3. **Track Everything**: Implement data lineage for debugging and bias detection
-4. **Choose Right Metrics**: Match evaluation metrics to business impact and class distribution
-5. **Iterate Deliberately**: Treat data creation as iterative process aligned with model development
-6. **Plan for Scale**: Consider computational and privacy constraints in labeling strategy
+### NLP Approaches
+
+- **Synonym Replacement**: Word swaps with embedding-space neighbors
+- **Template Generation**: Structured sentence patterns
+- **Perturbation**: Minor syntactic changes preserving semantics
+
+### Multimodal Considerations
+
+- **Cross-Modal Augmentation**: Image-text pair transformations
+- **Modality-Specific**: Requires format-aware techniques
+- **Performance Impact**: Often yields >2x effective dataset size
