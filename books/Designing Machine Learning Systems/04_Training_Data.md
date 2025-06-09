@@ -4,11 +4,11 @@ Here's the transformed content in the requested style:
 
 ## Data Challenges in ML Development
 
-Despite data's critical role in ML model development, most curricula disproportionately focus on modeling—the "fun" part perceived by practitioners. While building cutting-edge models is engaging, data wrangling with malformatted, memory-exceeding datasets remains a frustrating reality.
+Despite data's critical role in ML model development, most curricula disproportionately focus on modeling: the "fun" part perceived by practitioners. While building cutting-edge models is engaging, data wrangling with malformatted, memory-exceeding datasets remains a frustrating reality.
 
 ### Core Data Characteristics
 
-- **Inherent Complexity**: Data is messy, unpredictable, and potentially treacherous—improper handling can sink entire ML operations
+- **Inherent Complexity**: Data is messy, unpredictable, and potentially treacherous: improper handling can sink entire ML operations
 - **Dynamic Nature**: Production data is neither finite nor stationary
 - **Iterative Evolution**: Training data evolves alongside models throughout project lifecycles
 - **Bias Risks**: Data contains multiple bias types from collection, sampling, labeling, and historical human biases that models may perpetuate
@@ -116,7 +116,7 @@ Most production ML systems rely on supervised learning, making label quality and
 
 ## Class Imbalance Solutions
 
-Class imbalance—substantial inter-class sample count differences—affects both classification and regression tasks.
+Class imbalance: substantial inter-class sample count differences: affects both classification and regression tasks.
 
 ### Imbalance Challenges
 
