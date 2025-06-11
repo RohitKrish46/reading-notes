@@ -1,6 +1,6 @@
 Here's the transformed content in the requested style:
 
-# ML System Design - Data & Processing Notes
+# Training Data & Processing Notes
 
 ## Data Challenges in ML Development
 
